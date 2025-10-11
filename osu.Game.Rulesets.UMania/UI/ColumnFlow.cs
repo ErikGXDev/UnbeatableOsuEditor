@@ -1,7 +1,10 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
+using osu.Framework;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -10,6 +13,7 @@ using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Rulesets.UMania.Configuration;
 using osu.Game.Rulesets.UMania.Skinning;
 using osu.Game.Skinning;
+using osuTK;
 
 namespace osu.Game.Rulesets.UMania.UI
 {
@@ -62,9 +66,11 @@ namespace osu.Game.Rulesets.UMania.UI
         [Resolved]
         private ISkinSource skin { get; set; } = null!;
 
+
         [BackgroundDependencyLoader]
         private void load(ManiaRulesetConfigManager? rulesetConfig)
         {
+
             skin.SourceChanged += invalidateLayout;
         }
 
@@ -93,6 +99,26 @@ namespace osu.Game.Rulesets.UMania.UI
 
         private void updateColumnSize()
         {
+            float mobileAdjust = 1f;
+
+            /*if (RuntimeInfo.IsMobile && mobileLayout.Value == ManiaMobileLayout.LandscapeExpandedColumns)
+            {
+                // GridContainer+CellContainer containing this stage (gets split up for dual stages).
+                Vector2? containingCell = this.FindClosestParent<Stage>()?.Parent?.DrawSize;
+
+                // Will be null in tests.
+                if (containingCell != null && containingCell.Value.X >= containingCell.Value.Y)
+                {
+                    float aspectRatio = containingCell.Value.X / containingCell.Value.Y;
+
+                    // 2.83 is a mostly arbitrary scale-up (170 / 60, based on original implementation for argon)
+                    mobileAdjust = 2.83f * Math.Min(1, 7f / stageDefinition.Columns);
+                    // 1.92 is a "reference" mobile screen aspect ratio for phones.
+                    // We should scale it back for cases like tablets which aren't so extreme.
+                    mobileAdjust *= aspectRatio / 1.92f;
+                }
+            }*/
+
             for (int i = 0; i < stageDefinition.Columns; i++)
             {
                 float leftSpacing = skin.GetConfig<ManiaSkinConfigurationLookup, float>(
@@ -114,7 +140,7 @@ namespace osu.Game.Rulesets.UMania.UI
                 // only used by default skin (legacy skins get defaults set in LegacyManiaSkinConfiguration)
                 width ??= isSpecialColumn ? Column.SPECIAL_COLUMN_WIDTH : Column.COLUMN_WIDTH;
 
-                columns[i].Width = width.Value;
+                columns[i].Width = width.Value * mobileAdjust;
             }
         }
 

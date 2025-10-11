@@ -9,10 +9,10 @@ using osu.Framework.Input.Bindings;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
 using osu.Game.Graphics;
+using osu.Game.Overlays.Settings;
 using osu.Game.Rulesets.Configuration;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Edit;
-using osu.Game.Rulesets.Mania;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Rulesets.UMania.Mods;
@@ -29,13 +29,16 @@ namespace osu.Game.Rulesets.UMania
 {
     public class UManiaRuleset : Ruleset
     {
+        public const int MAX_STAGE_KEYS = 10;
+        public const string SHORT_NAME = "mania";
+
         public override string Description => "a very umania ruleset";
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) =>
             new DrawableManiaRuleset(this, beatmap, mods);
 
         public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) =>
-            new UManiaBeatmapConverter(beatmap, this);
+            new ManiaBeatmapConverter(beatmap, this);
 
         public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) =>
             new UManiaDifficultyCalculator(RulesetInfo, beatmap);
@@ -71,6 +74,9 @@ namespace osu.Game.Rulesets.UMania
             Text = ShortName[0].ToString(),
             Font = OsuFont.Default.With(size: 18),
         };
+
+        public override RulesetSettingsSubsection CreateSettings() => new ManiaSettingsSubsection(this);
+
 
         // Editor setup
         public override IBeatmapVerifier? CreateBeatmapVerifier() => new ManiaBeatmapVerifier();

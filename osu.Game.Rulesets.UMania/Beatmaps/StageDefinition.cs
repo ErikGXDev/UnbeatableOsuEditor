@@ -2,8 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using osu.Game.Rulesets.UMania.UI;
-using osu.Game.Screens.Play;
 
 namespace osu.Game.Rulesets.UMania.Beatmaps
 {
@@ -13,7 +11,7 @@ namespace osu.Game.Rulesets.UMania.Beatmaps
     public class StageDefinition
     {
         /// <summary>
-        /// The number of <see cref="SquareGraph.Column"/>s which this stage contains.
+        /// The number of <see cref="Column"/>s which this stage contains.
         /// </summary>
         public readonly int Columns;
 

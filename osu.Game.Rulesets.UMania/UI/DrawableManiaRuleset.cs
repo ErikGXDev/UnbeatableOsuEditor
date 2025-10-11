@@ -58,7 +58,6 @@ namespace osu.Game.Rulesets.UMania.UI
 
         private readonly Bindable<ManiaScrollingDirection> configDirection = new Bindable<ManiaScrollingDirection>();
         private readonly BindableDouble configScrollSpeed = new BindableDouble();
-        private readonly Bindable<bool> touchOverlay = new Bindable<bool>();
 
         public double TargetTimeRange { get; protected set; }
 
@@ -120,8 +119,10 @@ namespace osu.Game.Rulesets.UMania.UI
 
             TimeRange.Value = TargetTimeRange = currentTimeRange = ComputeScrollTime(configScrollSpeed.Value);
 
-            Config.BindWith(ManiaRulesetSetting.TouchOverlay, touchOverlay);
+
         }
+
+
 
         protected override void AdjustScrollSpeed(int amount) => configScrollSpeed.Value += amount;
 

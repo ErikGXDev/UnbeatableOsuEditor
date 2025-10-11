@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using osu.Framework.Input.Bindings;
 
-namespace osu.Game.Rulesets.Mania
+namespace osu.Game.Rulesets.UMania
 {
     public class SingleStageVariantGenerator
     {

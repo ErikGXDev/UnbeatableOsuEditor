@@ -5,9 +5,8 @@
 
 using System.Collections.Generic;
 using osu.Framework.Input.Bindings;
-using osu.Game.Rulesets.UMania;
 
-namespace osu.Game.Rulesets.Mania
+namespace osu.Game.Rulesets.UMania
 {
     public class VariantMappingGenerator
     {

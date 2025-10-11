@@ -12,6 +12,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
+using osu.Framework.Logging;
 using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 using osu.Game.Rulesets.Scoring;
@@ -92,8 +93,10 @@ namespace osu.Game.Rulesets.UMania.Objects.Drawables
 
                 var icon = helper.InferObjectTypeIcon();
 
-                noteSprite?.Expire();
+                if (noteSprite != null)
+                    noteSprite.Expire();
 
+                Logger.Log("Drawing a " + icon + " icon on note");
                 AddInternal(new Container
                 {
                     Child = noteSprite = new UbIcon(icon)
@@ -114,7 +117,8 @@ namespace osu.Game.Rulesets.UMania.Objects.Drawables
                 {
                     Drawable dr = new Container
                     {
-                        Child =
+                        Children = new Drawable[]
+                        {
                             new FillFlowContainer
                             {
                                 Direction = FillDirection.Horizontal,
@@ -125,6 +129,7 @@ namespace osu.Game.Rulesets.UMania.Objects.Drawables
                                     Scale = new Vector2(1f),
                                 })
                             }
+                        }
                     };
                     AddInternal(dr);
                     modIcons.Add(dr);

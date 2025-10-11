@@ -5,6 +5,7 @@ using osu.Framework.Bindables;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.UMania.Edit;
 using osu.Game.Rulesets.UMania.Scoring;
 
 namespace osu.Game.Rulesets.UMania.Objects

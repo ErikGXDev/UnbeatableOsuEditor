@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using osu.Game.Rulesets.UMania.UI;
 
 namespace osu.Game.Rulesets.UMania.Beatmaps
 {

@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Game.Rulesets.UMania", "osu.Game.Rulesets.UMania\osu.Game.Rulesets.UMania.csproj", "{1B53C343-353E-45DD-8B8A-52D11D6A1012}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Game.Rulesets.UMania.Tests", "osu.Game.Rulesets.UMania.Tests\osu.Game.Rulesets.UMania.Tests.csproj", "{0E1C53F1-E7E2-444B-842D-ED8F6C438977}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1B53C343-353E-45DD-8B8A-52D11D6A1012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B53C343-353E-45DD-8B8A-52D11D6A1012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B53C343-353E-45DD-8B8A-52D11D6A1012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B53C343-353E-45DD-8B8A-52D11D6A1012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E1C53F1-E7E2-444B-842D-ED8F6C438977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E1C53F1-E7E2-444B-842D-ED8F6C438977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E1C53F1-E7E2-444B-842D-ED8F6C438977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E1C53F1-E7E2-444B-842D-ED8F6C438977}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

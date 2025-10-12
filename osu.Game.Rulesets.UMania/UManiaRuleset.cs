@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using HarmonyLib;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
+using osu.Framework.Logging;
 using osu.Game.Beatmaps;
 using osu.Game.Configuration;
 using osu.Game.Graphics;
@@ -14,23 +16,48 @@ using osu.Game.Rulesets.Configuration;
 using osu.Game.Rulesets.Difficulty;
 using osu.Game.Rulesets.Edit;
 using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Scoring.Legacy;
 using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Rulesets.UMania.Mods;
 using osu.Game.Rulesets.UMania.UI;
 using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.UMania.Configuration;
+using osu.Game.Rulesets.UMania.Difficulty;
 using osu.Game.Rulesets.UMania.Edit;
 using osu.Game.Rulesets.UMania.Edit.Setup;
 using osu.Game.Rulesets.UMania.Skinning.Argon;
 using osu.Game.Screens.Edit.Setup;
 using osu.Game.Skinning;
+using osu.Game.Rulesets.UMania.Patches;
 
 namespace osu.Game.Rulesets.UMania
 {
-    public class UManiaRuleset : Ruleset
+    public class UManiaRuleset : Ruleset, ILegacyRuleset
     {
         public const int MAX_STAGE_KEYS = 10;
         public const string SHORT_NAME = "mania";
+
+
+        private static bool hasPatched;
+        public UManiaRuleset()
+        {
+            try
+            {
+
+                if (!hasPatched)
+                {
+                    // Patch the ManiaBeatmapConverter to use UManiaRuleset instead of ManiaRuleset
+                    var harmony = new Harmony("umania.ruleset.patch");
+                    harmony.PatchAll();
+                    hasPatched = true;
+                    Logger.Log("+++ Successfully applied Harmony patches for UManiaRuleset - " + nameof(OnlinePatch));
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("!!! Failed to apply Harmony patches for UManiaRuleset: " + e);
+            }
+        }
 
         public override string Description => "a very umania ruleset";
 
@@ -91,6 +118,12 @@ namespace osu.Game.Rulesets.UMania
         ];
 
         public override HitObjectComposer CreateHitObjectComposer() => new UnbeatableHitObjectComposer(this);
+
+        // Legacy support
+
+        public ILegacyScoreSimulator CreateLegacyScoreSimulator() => new ManiaLegacyScoreSimulator();
+        public int LegacyID => 3;
+
 
         // Leave this line intact. It will bake the correct version into the ruleset on each build/release.
         public override string RulesetAPIVersionSupported => CURRENT_RULESET_API_VERSION;

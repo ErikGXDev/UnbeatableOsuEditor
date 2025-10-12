@@ -14,6 +14,7 @@ using osu.Game.Extensions;
 using osu.Game.Graphics.UserInterfaceV2;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Setup;
+using WebSocketSharp;
 using Logger = osu.Framework.Logging.Logger;
 
 namespace osu.Game.Rulesets.UMania.Edit.Setup
@@ -75,14 +76,14 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             beatmapStream.Dispose();
             audioStream.Dispose();
 
-            /*Task.Run(() =>
+            Task.Run(() =>
             {
                 using (var ws = new WebSocket("ws://localhost:5080"))
                 {
                     ws.Connect();
                     ws.Send("play " + beatmapPath);
                 }
-            });*/
+            });
         }
 
         public void ExportToZip()

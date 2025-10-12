@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.Beatmaps.Formats;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Types;
@@ -61,6 +62,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                     if (hitObject is IHasDuration hasDuration && hitObject is not IHasPath)
                         hasDuration.Duration = Math.Floor(hasDuration.EndTime) - Math.Floor(hitObject.StartTime);
                 }
+            }
+
+            foreach (TimingControlPoint tcp in beatmap.ControlPointInfo.TimingPoints.ToList())
+            {
+                tcp.Time = Math.Floor(tcp.Time);
             }
         }
     }

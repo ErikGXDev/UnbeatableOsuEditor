@@ -27,7 +27,7 @@ public partial class UnbeatableHitObjectComposer : ManiaHitObjectComposer
         // Unbeatable Note Predicates
 
         // Normal Notes
-        new UbNoteCompositionTool("Note", UbIconType.Note, [2, 3, 5], []),
+        new UbNoteCompositionTool("Note", UbIconType.Note, [2, 3], []),
         new UbHoldNoteCompositionTool("Hold", UbIconType.Hold, [2, 3], []),
 
         // Dodge

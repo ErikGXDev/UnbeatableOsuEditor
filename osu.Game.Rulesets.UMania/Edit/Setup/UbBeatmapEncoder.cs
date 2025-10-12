@@ -18,6 +18,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         public UbBeatmapEncoder(IBeatmap beatmap, ISkin? skin)
             : base(beatmap, skin)
         {
+
             foreach (HitObject hitObject in beatmap.HitObjects.ToList())
             {
                 var normalSample = hitObject.Samples.FirstOrDefault(s => s.Name == HitSampleInfo.HIT_NORMAL);
@@ -69,5 +70,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 tcp.Time = Math.Floor(tcp.Time);
             }
         }
+
+
+
     }
 }

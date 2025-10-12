@@ -35,8 +35,10 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             var beatmapSet = workingBeatmap.BeatmapSetInfo;
             string audioFilename = Beatmap.Metadata.AudioFile;
 
+            var playableBeatmap = workingBeatmap.GetPlayableBeatmap(workingBeatmap.BeatmapInfo.Ruleset);
+
             // Beatmap file
-            UbBeatmapEncoder encoder = new UbBeatmapEncoder(Beatmap, null);
+            UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
@@ -95,6 +97,10 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             var workingBeatmap = editor.Beatmap.Value;
 
             var beatmapSet = workingBeatmap.BeatmapSetInfo;
+
+            var playableBeatmap = workingBeatmap.GetPlayableBeatmap(workingBeatmap.BeatmapInfo.Ruleset);
+
+
             string audioFilename = Beatmap.Metadata.AudioFile;
 
             var audioFile = beatmapSet.GetFile(audioFilename);
@@ -102,7 +108,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             // Export the .osu file
             Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
 
-            UbBeatmapEncoder encoder = new UbBeatmapEncoder(Beatmap, null);
+            UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);

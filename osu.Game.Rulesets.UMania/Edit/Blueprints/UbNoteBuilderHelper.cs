@@ -242,11 +242,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Blueprints
                     {
                         icons.Add(UbIconType.ModCop4);
                     }
-                    else if (HasSample(HitSampleInfo.HIT_WHISTLE))
+                    else if (HasSample(HitSampleInfo.HIT_CLAP))
                     {
                         icons.Add(UbIconType.ModCop3);
                     }
-                    else if (HasSample(HitSampleInfo.HIT_CLAP))
+                    else if (HasSample(HitSampleInfo.HIT_WHISTLE))
                     {
                         icons.Add(UbIconType.ModCop2);
                     }

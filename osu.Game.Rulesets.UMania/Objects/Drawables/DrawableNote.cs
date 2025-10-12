@@ -115,8 +115,12 @@ namespace osu.Game.Rulesets.UMania.Objects.Drawables
 
                 if (infIcons.Count > 0)
                 {
+                    var scale = infIcons.Count > 2 ? 0.85f : 1f;
+                    var xOffset = infIcons.Count > 2 ? -5 : 0;
+
                     Drawable dr = new Container
                     {
+                        X = xOffset,
                         Children = new Drawable[]
                         {
                             new FillFlowContainer
@@ -126,7 +130,7 @@ namespace osu.Game.Rulesets.UMania.Objects.Drawables
                                 AutoSizeAxes = Axes.Both,
                                 Children = infIcons.ConvertAll(i => new UbIcon(i)
                                 {
-                                    Scale = new Vector2(1f),
+                                    Scale = new Vector2(scale),
                                 })
                             }
                         }

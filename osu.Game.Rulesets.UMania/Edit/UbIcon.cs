@@ -63,6 +63,13 @@ namespace osu.Game.Rulesets.UMania.Edit
 
         ModInvisible,
         ModFlying,
-        ModSwapImmediate
+        ModSwapImmediate,
+
+        ModCopFinish,
+        ModCop1,
+        ModCop2,
+        ModCop3,
+        ModCop4,
+        ModCopHeavy
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -52,56 +53,145 @@ public partial class UnbeatableHitObjectComposer : ManiaHitObjectComposer
 
     public Bindable<TernaryState> SettingShowAllowedColumns = new Bindable<TernaryState>(TernaryState.True);
 
-    private readonly Bindable<TernaryState> modFlyingNote = new Bindable<TernaryState>();
+    /*private readonly Bindable<TernaryState> modFlyingNote = new Bindable<TernaryState>();
     private readonly Bindable<TernaryState> modInvisibleNote = new Bindable<TernaryState>();
-
     private readonly Bindable<TernaryState> modSwapImmediate = new Bindable<TernaryState>();
+
+    private readonly Bindable<TernaryState> modCopNote = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCopFinish = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCop1 = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCop2 = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCop3 = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCop4 = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCopHeavy = new Bindable<TernaryState>();
+    private readonly Bindable<TernaryState> modCopImpossible = new Bindable<TernaryState>();*/
+
 
     public DrawableTernaryButton ModFlyingButton = null!;
     public DrawableTernaryButton ModInvisibleButton = null!;
 
+    //public
+
+    public DrawableTernaryButton ModCopButton = null!;
+    public DrawableTernaryButton ModCopFinishButton = null!;
+    public DrawableTernaryButton ModCop1Button = null!;
+    public DrawableTernaryButton ModCop2Button = null!;
+    public DrawableTernaryButton ModCop3Button = null!;
+    public DrawableTernaryButton ModCop4Button = null!;
+    public DrawableTernaryButton ModCopHeavyButton = null!;
+    //public DrawableTernaryButton ModCopImpossibleButton = null!;
+
+
     public DrawableTernaryButton ModSwapImmediateButton = null!;
 
+
+
     // Create a dictionary that maps each button to a list of tool names that should have it enabled
-    public Dictionary<DrawableTernaryButton, List<string>> ModButtonToolMap =
-        new Dictionary<DrawableTernaryButton, List<string>>();
+    public List<ModMapping> ModButtonToolMap;
 
     protected override IEnumerable<Drawable> CreateTernaryButtons()
     {
         return new Drawable[]
         {
-            ModFlyingButton = new DrawableTernaryButton
-            {
-                Current = modFlyingNote,
-                Description = "Flying",
-                CreateIcon = () => new SpriteIcon { Icon = FontAwesome.Solid.Wind },
-            },
-            ModInvisibleButton = new DrawableTernaryButton
-            {
-                Current = modInvisibleNote,
-                Description = "Invisible",
-                CreateIcon = () => new SpriteIcon { Icon = FontAwesome.Solid.EyeSlash },
-            },
-            ModSwapImmediateButton = new DrawableTernaryButton
-            {
-                Current = modSwapImmediate,
-                Description = "Swap Immediate",
-                CreateIcon = () => new SpriteIcon { Icon = FontAwesome.Solid.ExchangeAlt },
-            },
+            ModFlyingButton = makeButton("Flying", FontAwesome.Solid.Wind),
+            ModInvisibleButton = makeButton("Invisible", FontAwesome.Solid.EyeSlash),
+            ModSwapImmediateButton = makeButton("Swap Immediate", FontAwesome.Solid.ExchangeAlt),
+            ModCopButton = makeButton("Brawl Note", FontAwesome.Solid.UserShield),
+            ModCop1Button = makeButton("Cop 1", FontAwesome.Solid.UserShield),
+            ModCop2Button = makeButton("Cop 2", FontAwesome.Solid.UserShield),
+            ModCop3Button = makeButton("Cop 3", FontAwesome.Solid.UserShield),
+            ModCop4Button = makeButton("Cop 4", FontAwesome.Solid.UserShield),
+            ModCopFinishButton = makeButton("Knock-out", FontAwesome.Solid.UserShield),
+            ModCopHeavyButton = makeButton("Heavy Brawl", FontAwesome.Solid.UserShield),
+            //ModCopImpossibleButton = makeButton(modCopImpossible, "Impossible Cop", FontAwesome.Solid.UserShield),
+
         };
 
         //return base.CreateTernaryButtons();
     }
 
+    private DrawableTernaryButton makeButton(string description, IconUsage icon)
+    {
+        return new DrawableTernaryButton
+        {
+            Current = new Bindable<TernaryState>(),
+            Description = description,
+            CreateIcon = () => new SpriteIcon { Icon = icon },
+        };
+    }
+
+    private ModMapping makeMapping(DrawableTernaryButton button, List<string> tools, Func<bool>? availabilityPredicate = null)
+    {
+        return new ModMapping
+        {
+            Button = button,
+            ApplicableTools = tools,
+            AvailabilityPredicate = availabilityPredicate
+        };
+    }
+
+    private bool isCopModding()
+    {
+        return ModCopButton.Current.Value == TernaryState.True && ModCopButton.Enabled.Value;
+    }
+
+
     [BackgroundDependencyLoader]
     private void load()
     {
-        ModButtonToolMap = new Dictionary<DrawableTernaryButton, List<string>>
+        ModButtonToolMap = new List<ModMapping>()
         {
-            { ModFlyingButton, new List<string> { "Note", "Hold", "Dodge", "Double", "Spam", "Freestyle" } },
-            { ModInvisibleButton, new List<string> { "Note", "Hold", "Double", "Spam", "Freestyle" } },
-            { ModSwapImmediateButton, new List<string> { "Flip" } },
+            makeMapping(ModFlyingButton, ["Note", "Hold", "Dodge", "Double", "Spam", "Freestyle"], () => !isCopModding() ),
+            makeMapping(ModInvisibleButton, ["Note", "Hold", "Double", "Spam", "Freestyle"], () => !isCopModding() ),
+            makeMapping(ModSwapImmediateButton, ["Flip"], () => !isCopModding() ),
+            makeMapping(ModCopButton, ["Note", "Hold"] ),
+            makeMapping(ModCop1Button, ["Note", "Hold"], isCopModding ),
+            makeMapping(ModCop2Button, ["Note", "Hold"], isCopModding ),
+            makeMapping(ModCop3Button, ["Note", "Hold"], isCopModding ),
+            makeMapping(ModCop4Button, ["Note", "Hold"], isCopModding ),
+            makeMapping(ModCopFinishButton, ["Note", "Hold"], isCopModding ),
+            makeMapping(ModCopHeavyButton, ["Note", "Hold"], isCopModding ),
+            //{ ModCopImpossibleButton, new List<string> { "Note", "Hold" } },
+
         };
+
+        ModCop1Button.Current.Value = TernaryState.True; // Default to cop 1
+
+        // Make cop buttons mutually exclusive
+        var copButtons = new[] { ModCop1Button, ModCop2Button, ModCop3Button, ModCop4Button };
+
+        foreach (var button in copButtons)
+        {
+            button.Current.BindValueChanged(val =>
+            {
+                if (val.NewValue == TernaryState.False)
+                {
+                    // If none are selected, reselect this one
+                    bool anySelected = false;
+                    foreach (var otherButton in copButtons)
+                    {
+                        if (otherButton.Current.Value == TernaryState.True)
+                        {
+                            anySelected = true;
+                            break;
+                        }
+                    }
+                    if (!anySelected)
+                        button.Current.Value = TernaryState.True;
+                }
+
+                if (val.NewValue == TernaryState.True)
+                {
+                    foreach (var otherButton in copButtons)
+                    {
+                        if (otherButton != button)
+                            otherButton.Current.Value = TernaryState.False;
+                    }
+                }
+            });
+        }
+
+
 
         LeftToolbox.Add(new EditorToolboxGroup("unbeatable")
         {
@@ -111,15 +201,15 @@ public partial class UnbeatableHitObjectComposer : ManiaHitObjectComposer
                 AutoSizeAxes = Axes.Y,
                 Direction = FillDirection.Vertical,
                 Spacing = new Vector2(0, 5),
-                Children = new[]
-                {
+                Children =
+                [
                     new DrawableTernaryButton
                     {
                         Current = SettingShowAllowedColumns,
                         Description = "Use column hints",
                         CreateIcon = () => new SpriteIcon { Icon = FontAwesome.Solid.Lightbulb },
                     }
-                }
+                ]
             },
         });
     }
@@ -130,23 +220,30 @@ public partial class UnbeatableHitObjectComposer : ManiaHitObjectComposer
 
         if (BlueprintContainer.CurrentTool != null)
         {
+            // Make buttons update
             var tool = BlueprintContainer.CurrentTool;
 
-            string name = tool.Name;
+            string currentToolName = tool.Name;
 
-            foreach (var kvp in ModButtonToolMap)
+            foreach (var mapping in ModButtonToolMap)
             {
-                var button = kvp.Key;
-                var toolsWithButton = kvp.Value;
+                var button = mapping.Button;
+                var tools = mapping.ApplicableTools;
+                var predicate = mapping.AvailabilityPredicate;
 
-                bool shouldEnable = toolsWithButton.Contains(name);
+                bool predicateResult = predicate?.Invoke() ?? true;
+
+                bool shouldEnable = tools.Contains(currentToolName) && predicateResult;
 
                 if (button.Enabled.Value != shouldEnable)
                 {
-                    button.Enabled.Value = toolsWithButton.Contains(name);
+                    button.Enabled.Value = shouldEnable;
                 }
+                button.Alpha = shouldEnable ? 1 : 0;
             }
 
+
+            // Column hints
             var stage = Playfield.Stages[0];
 
             var columns = stage.Columns;

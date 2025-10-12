@@ -23,11 +23,9 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
     {
         public override LocalisableString Title => "Unbeatable";
 
-        [Resolved]
-        private Editor editor { get; set; } = null!;
+        [Resolved] private Editor editor { get; set; } = null!;
 
-        [Resolved]
-        private BeatmapManager beatmapManager { get; set; } = null!;
+        [Resolved] private BeatmapManager beatmapManager { get; set; } = null!;
 
         public void ExportToUnbeatable()
         {
@@ -100,8 +98,6 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             string audioFilename = Beatmap.Metadata.AudioFile;
 
             var audioFile = beatmapSet.GetFile(audioFilename);
-            if (audioFile == null)
-                return;
 
             // Export the .osu file
             Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
@@ -114,11 +110,6 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             encoder.Encode(sw);
 
             sw.Flush();
-
-            // Export the audio file
-            var audioStream = workingBeatmap.GetStream(audioFile.File.GetStoragePath());
-            if (audioStream == null)
-                return;
 
             // Create the .zip file
             string zipFilename = baseFilename + ".zip";
@@ -135,19 +126,28 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                         beatmapStream.CopyTo(entryStream);
                     }
 
-                    var audioEntry = archive.CreateEntry(audioFilename, CompressionLevel.Optimal);
-
-                    using (var entryStream = audioEntry.Open())
+                    // Only add audio file if it exists
+                    if (audioFile != null)
                     {
-                        audioStream.Seek(0, SeekOrigin.Begin);
-                        audioStream.CopyTo(entryStream);
+                        var audioStream = workingBeatmap.GetStream(audioFile.File.GetStoragePath());
+                        if (audioStream != null)
+                        {
+                            var audioEntry = archive.CreateEntry(audioFilename, CompressionLevel.Optimal);
+
+                            using (var entryStream = audioEntry.Open())
+                            {
+                                audioStream.Seek(0, SeekOrigin.Begin);
+                                audioStream.CopyTo(entryStream);
+                            }
+
+                            audioStream.Dispose();
+                        }
                     }
                 }
 
                 zipStream.Seek(0, SeekOrigin.Begin);
 
                 // Save the .zip file
-
                 string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                     "Downloads");
 
@@ -159,10 +159,10 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             }
 
             beatmapStream.Dispose();
-            audioStream.Dispose();
 
             Logger.Log($"Exporting to {zipFilename}...");
         }
+
 
         [BackgroundDependencyLoader]
         private void load()

@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
@@ -12,6 +13,7 @@ using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Extensions;
 using osu.Game.Graphics.UserInterfaceV2;
+using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Setup;
 using WebSocketSharp;
@@ -30,14 +32,18 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         public void ExportToUnbeatable()
         {
             Logger.Log("Exporting to Unbeatable...");
+
             var workingBeatmap = editor.Beatmap.Value;
 
             var beatmapSet = workingBeatmap.BeatmapSetInfo;
-            string audioFilename = Beatmap.Metadata.AudioFile;
 
-            var playableBeatmap = workingBeatmap.GetPlayableBeatmap(workingBeatmap.BeatmapInfo.Ruleset);
+            // Export the .osu file
+            Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
 
-            // Beatmap file
+            PassBeatmapConverter passConverter = new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+
+            var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
+
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
             var beatmapStream = new MemoryStream();
@@ -46,8 +52,9 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             encoder.Encode(sw);
 
             sw.Flush();
-
             // Audio file
+            string audioFilename = Beatmap.Metadata.AudioFile;
+
             var audioFile = beatmapSet.GetFile(audioFilename);
             if (audioFile == null)
                 return;
@@ -98,15 +105,13 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var beatmapSet = workingBeatmap.BeatmapSetInfo;
 
-            var playableBeatmap = workingBeatmap.GetPlayableBeatmap(workingBeatmap.BeatmapInfo.Ruleset);
-
-
-            string audioFilename = Beatmap.Metadata.AudioFile;
-
-            var audioFile = beatmapSet.GetFile(audioFilename);
 
             // Export the .osu file
             Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
+
+            PassBeatmapConverter passConverter = new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+
+            var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
 
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
@@ -116,6 +121,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             encoder.Encode(sw);
 
             sw.Flush();
+
+
+            string audioFilename = Beatmap.Metadata.AudioFile;
+
+            var audioFile = beatmapSet.GetFile(audioFilename);
 
             // Create the .zip file
             string zipFilename = baseFilename + ".zip";

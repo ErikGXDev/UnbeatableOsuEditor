@@ -40,7 +40,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                             break;
 
                         case HitSampleInfo.BANK_DRUM:
-                            newBank = HitSampleInfo.BANK_SOFT;
+                            newBank = HitSampleInfo.BANK_DRUM;
                             break;
 
                         case HitSampleInfo.BANK_STRONG:

@@ -104,6 +104,7 @@ namespace osu.Game.Rulesets.UMania
 
         public override RulesetSettingsSubsection CreateSettings() => new ManiaSettingsSubsection(this);
 
+        public override IBeatmapProcessor? CreateBeatmapProcessor(IBeatmap beatmap) => new UbProcessor(beatmap);
 
         // Editor setup
         public override IBeatmapVerifier? CreateBeatmapVerifier() => new ManiaBeatmapVerifier();

@@ -36,10 +36,10 @@ namespace osu.Game.Rulesets.UMania.Edit.Blueprints
 
             if (isModActive(composer.ModCopButton))
             {
-                ApplyModifierMainBank(composer.ModCopButton, HitSampleInfo.BANK_STRONG);
+                ApplyModifierMainBank(composer.ModCopButton, HitSampleInfo.BANK_DRUM);
 
                 ApplyModifierSample(composer.ModCopFinishButton, HitSampleInfo.HIT_FINISH);
-                ApplyModifierSample(composer.ModCop1Button, HitSampleInfo.HIT_FLOURISH);
+                //ApplyModifierSample(composer.ModCop1Button, HitSampleInfo.HIT_FLOURISH);
                 ApplyModifierSample(composer.ModCop2Button, HitSampleInfo.HIT_WHISTLE);
                 ApplyModifierSample(composer.ModCop3Button, HitSampleInfo.HIT_CLAP);
                 // Cop 4 has both whistle and clap
@@ -171,7 +171,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Blueprints
 
                 int column = maniaHitObject.Column;
 
-                if (HasMainBank(HitSampleInfo.BANK_STRONG))
+                if (HasMainBank(HitSampleInfo.BANK_DRUM))
                 {
                     return UbIconType.Brawl;
                 }
@@ -234,7 +234,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Blueprints
                 int column = maniaHitObject.Column;
 
                 Logger.Log(HasMainBank(HitSampleInfo.BANK_STRONG) + " " + HasMainBank(HitSampleInfo.BANK_SOFT) + " " + HasSample(HitSampleInfo.HIT_CLAP) + " " + HasSample(HitSampleInfo.HIT_WHISTLE) + " " + HasAdditionBank(HitSampleInfo.BANK_NORMAL));
-                if (HasMainBank(HitSampleInfo.BANK_STRONG))
+                if (HasMainBank(HitSampleInfo.BANK_DRUM))
                 {
                     // Cop
 
@@ -250,7 +250,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Blueprints
                     {
                         icons.Add(UbIconType.ModCop2);
                     }
-                    else if (HasSample(HitSampleInfo.HIT_FLOURISH))
+                    else
                     {
                         icons.Add(UbIconType.ModCop1);
                     }

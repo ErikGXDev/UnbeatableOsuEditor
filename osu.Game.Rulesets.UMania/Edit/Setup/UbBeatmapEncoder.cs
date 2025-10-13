@@ -2,7 +2,9 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.IO;
 using System.Linq;
+using osu.Framework.Logging;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.ControlPoints;
@@ -25,7 +27,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
                 if (normalSample != null)
                 {
-                    var newBank = "zero";
+                    string newBank = "zero";
 
                     switch (normalSample.Bank.ToLowerInvariant())
                     {
@@ -55,14 +57,17 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                         normalSample.Name,
                         newBank,
                         normalSample.Suffix,
-                        normalSample.Volume
+                        normalSample.Volume,
+                        false
                     );
 
-                    hitObject.StartTime = (int)hitObject.StartTime;
-
-                    if (hitObject is IHasDuration hasDuration && hitObject is not IHasPath)
-                        hasDuration.Duration = Math.Floor(hasDuration.EndTime) - Math.Floor(hitObject.StartTime);
                 }
+
+                hitObject.StartTime = (int)hitObject.StartTime;
+
+                if (hitObject is IHasDuration hasDuration && hitObject is not IHasPath)
+                    hasDuration.Duration = Math.Floor(hasDuration.EndTime) - Math.Floor(hitObject.StartTime);
+
             }
 
             foreach (TimingControlPoint tcp in beatmap.ControlPointInfo.TimingPoints.ToList())
@@ -71,6 +76,31 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             }
         }
 
+
+        public void EncodeB(TextWriter writer)
+        {
+            var tempWriter = new StringWriter();
+            Encode(tempWriter);
+
+            string output = tempWriter.ToString();
+
+            // Replace all beginning 512's with 511
+
+
+            string[] splitLines = output.Split(writer.NewLine);
+            foreach (string line in splitLines.ToList())
+            {
+                if (line.StartsWith("512,"))
+                {
+                    string newLine = line.Replace("512,", "511,");
+                    writer.WriteLine(newLine);
+                }
+                else
+                {
+                    writer.WriteLine(line);
+                }
+            }
+        }
 
 
     }

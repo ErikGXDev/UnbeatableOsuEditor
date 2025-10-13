@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using MongoDB.Bson;
+using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.IO.Serialization;
 using osu.Game.Rulesets.Objects;
@@ -32,17 +33,30 @@ public class PassBeatmapConverter : BeatmapConverter<HitObject>
         var serializedHitObjects = new List<HitObject>();
         foreach (var hitObject in hitObjects)
         {
+            var samples = hitObject.Samples;
+            var serializedSamples = new List<HitSampleInfo>(samples.Count);
+
+            foreach (var sample in samples)
+            {
+                var serializedSample = sample.Serialize();
+                var deserializedSample = serializedSample.Deserialize<HitSampleInfo>();
+                serializedSamples.Add(deserializedSample);
+            }
+
+
             var serialized = hitObject.Serialize();
 
             if (hitObject is Note note)
             {
                 var deserialized = serialized.Deserialize<Note>();
+                deserialized.Samples = serializedSamples;
                 serializedHitObjects.Add(deserialized);
             }
             else if (hitObject is HoldNote holdNote)
             {
                 var deserialized = serialized.Deserialize<HoldNote>();
                 serializedHitObjects.Add(deserialized);
+
             }
             else
             {

@@ -49,7 +49,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
 
-            encoder.Encode(sw);
+            encoder.EncodeB(sw);
 
             sw.Flush();
             // Audio file
@@ -118,7 +118,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
 
-            encoder.Encode(sw);
+            encoder.EncodeB(sw);
 
             sw.Flush();
 

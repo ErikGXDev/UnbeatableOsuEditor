@@ -5,7 +5,7 @@ using osu.Game.Skinning;
 
 namespace osu.Game.Rulesets.UMania.Patches;
 
-[HarmonyPatch(typeof(LegacyBeatmapEncoder), MethodType.Constructor, new[] { typeof(IBeatmap), typeof(ISkin) })]
+//[HarmonyPatch(typeof(LegacyBeatmapEncoder), MethodType.Constructor, new[] { typeof(IBeatmap), typeof(ISkin) })]
 public class LegacyBypass
 {
     public static void Prefix(IBeatmap beatmap, ISkin? skin)

@@ -50,7 +50,7 @@ namespace osu.Game.Rulesets.UMania
                     var harmony = new Harmony("umania.ruleset.patch");
                     harmony.PatchAll();
                     hasPatched = true;
-                    Logger.Log("+++ Successfully applied Harmony patches for UManiaRuleset - " + nameof(LegacyBypass));
+                    Logger.Log("+++ Successfully applied Harmony patches for UManiaRuleset - " + nameof(OnlinePatch));
                 }
             }
             catch (Exception e)

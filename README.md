@@ -2,9 +2,9 @@
 
 A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier.
 
-## Disclaimer
 
-This ruleset adds additionally patches that make the game think that it is the same as the original osu!mania ruleset (this is done to enable saving in the editor). Although the rulesets can co-exist at the same time, some downloaded beatmaps may behave differently when this ruleset is installed.
+> [!WARNING]  
+> This ruleset adds additionally patches that make the game think that it is the same as the original osu!mania ruleset (this is done to enable saving in the editor). Although the rulesets can co-exist at the same time, some downloaded beatmaps may behave differently when this ruleset is installed.
 
 ## Features
 

@@ -2,9 +2,29 @@
 
 A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier.
 
-
 > [!WARNING]  
 > This ruleset adds additionally patches that make the game think that it is the same as the original osu!mania ruleset (this is done to enable saving in the editor). Although the rulesets can co-exist at the same time, some downloaded beatmaps may behave differently when this ruleset is installed.
+
+## Installation
+
+> [!TIP]
+> You can download the latest version of the ruleset from the [releases page](https://github.com/ErikGXDev/UnbeatableOsuEditor/releases).
+
+The ruleset consists of a zip file containing 3 files that you need to extract into the `rulesets` folder of your osu!lazer installation.
+
+### Installation instructions
+
+1. Navigate to the osu!lazer data directory. You can do so by opening the settings panel in osu!lazer and clicking on the "open osu! folder" button. Alternatively you can directly navigate to the `rulesets` directory via your OS directory explorer at the following locations:
+
+   - `%AppData%/osu/rulesets` on Windows
+   - `~/.local/share/osu/rulesets` on Linux / macOS
+
+   **NOTE**: If you have relocated your osu! data directory to another directory, the `rulesets` directory will be there instead.
+
+2. Extract the ruleset's zip file contents into the `rulesets` directory.
+
+3. Start osu!lazer and begin creating by selecting the ruleset in the top left and entering the editor.
+   If osu!lazer was running while installing the ruleset, you may need to restart the game in order for the ruleset to appear.
 
 ## Features
 
@@ -23,3 +43,5 @@ A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier.
 ## Credits
 
 Heavily adapts the osu!mania ruleset from [osu!(lazer)](https://github.com/ppy/osu) (Licensed under MIT)
+
+Installation instructions adapted from [Rush ruleset](https://github.com/Beamographic/rush) (Licensed under MIT)

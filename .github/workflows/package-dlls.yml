@@ -1,0 +1,45 @@
+﻿name: Package DLLs for Release
+
+on:
+  push:
+    branches: [ main ]
+  release:
+    types: [created]
+
+jobs:
+  build-and-package:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore UnbeatableManiaNew.sln
+
+      - name: Build solution
+        run: dotnet build UnbeatableManiaNew.sln --configuration Release
+
+      - name: Find DLLs and package
+        run: |
+          mkdir packaged
+          copy osu.Game.Rulesets.UMania\bin\Release\0Harmony.dll packaged\
+          copy osu.Game.Rulesets.UMania\bin\Release\websocket-sharp.dll packaged\
+          copy osu.Game.Rulesets.UMania\bin\Release\osu.Game.Rulesets.UMania.dll packaged\osu.Game.Rulesets.Unbeatable.dll
+          powershell Compress-Archive -Path packaged\* -DestinationPath osu.Game.Rulesets.Unbeatable.zip
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: UManiaRelease
+          path: osu.Game.Rulesets.Unbeatable.zip
+
+      - name: Upload to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: osu.Game.Rulesets.Unbeatable.zip

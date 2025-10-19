@@ -27,9 +27,9 @@ jobs:
       - name: Find DLLs and package
         run: |
           mkdir packaged
-          copy osu.Game.Rulesets.UMania\bin\Release\0Harmony.dll packaged\
-          copy osu.Game.Rulesets.UMania\bin\Release\websocket-sharp.dll packaged\
-          copy osu.Game.Rulesets.UMania\bin\Release\osu.Game.Rulesets.UMania.dll packaged\osu.Game.Rulesets.Unbeatable.dll
+          copy osu.Game.Rulesets.UMania\bin\Release\net8.0\0Harmony.dll packaged\
+          copy osu.Game.Rulesets.UMania\bin\Release\net8.0\websocket-sharp.dll packaged\
+          copy osu.Game.Rulesets.UMania\bin\Release\net8.0\osu.Game.Rulesets.UMania.dll packaged\osu.Game.Rulesets.Unbeatable.dll
           powershell Compress-Archive -Path packaged\* -DestinationPath osu.Game.Rulesets.Unbeatable.zip
 
       - name: Upload zip artifact

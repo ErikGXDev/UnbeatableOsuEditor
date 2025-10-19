@@ -59,7 +59,7 @@ namespace osu.Game.Rulesets.UMania
             }
         }
 
-        public override string Description => "a very umania ruleset";
+        public override string Description => "unbeatable";
 
         public override DrawableRuleset CreateDrawableRulesetWith(IBeatmap beatmap, IReadOnlyList<Mod> mods = null) =>
             new DrawableManiaRuleset(this, beatmap, mods);
@@ -94,13 +94,7 @@ namespace osu.Game.Rulesets.UMania
         public override IEnumerable<KeyBinding> GetDefaultKeyBindings(int variant = 0) => new SingleStageVariantGenerator(variant).GenerateMappings();
 
 
-        public override Drawable CreateIcon() => new SpriteText
-        {
-            Anchor = Anchor.Centre,
-            Origin = Anchor.Centre,
-            Text = ShortName[0].ToString(),
-            Font = OsuFont.Default.With(size: 18),
-        };
+        public override Drawable CreateIcon() => new URulesetIcon(this);
 
         public override RulesetSettingsSubsection CreateSettings() => new ManiaSettingsSubsection(this);
 

@@ -15,7 +15,6 @@ namespace osu.Game.Rulesets.UMania.Edit.Composition
         {
         }
 
-        //public override Drawable CreateIcon() => new UbIcon(UbIconType.Enemy);
 
         public override HitObjectPlacementBlueprint CreatePlacementBlueprint() => new UbNotePlacementBlueprint(Columns, HitSamples, Bank);
     }

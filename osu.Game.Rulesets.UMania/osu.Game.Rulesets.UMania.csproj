@@ -11,15 +11,19 @@
         <EmbeddedResource Include="Resources\**"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Lib.Harmony" Version="2.4.1" />
         <PackageReference Include="ppy.osu.Game" Version="2025.905.0" />
-        <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
+        <Reference Include="WebSocketSharp">
+            <HintPath>lib\websocket-sharp.dll</HintPath>
+        </Reference>
+        <Reference Include="0Harmony">
+            <HintPath>lib\0Harmony.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
-        <None Include="$(NuGetPackageRoot)websocketsharp\1.0.3-rc11\lib\websocket-sharp.dll">
+        <None Include="lib\websocket-sharp.dll" Link="websocket-sharp.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <None Include="$(NuGetPackageRoot)lib.harmony\2.4.1\lib\net8.0\0Harmony.dll">
+        <None Include="lib\0Harmony.dll" Link="0Harmony.dll">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

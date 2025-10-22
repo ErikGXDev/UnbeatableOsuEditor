@@ -25,10 +25,11 @@ The ruleset consists of a zip file containing 3 files that you need to extract i
 
 ## Features
 
-- Simple note presets: remembering and manually setting samples no longer required
-- Note modifier menus: easily customize notes
-- In-editor note preview: see the type and modifiers of any note
+- Simple note presets: Remembering and manually setting samples no longer required
+- Note modifier menus: Easily customize notes
+- In-editor note preview: See the type and modifiers of any note
 - Column guides: Make sure you place notes where they belong
+- Inspector: Easily check what side the notes are currently on.
 - Simple export options: Export as .zip or playtest directly in UNBEATABLE
 - Cute icons
 - Everything else the osu!mania editor has to offer (composition, timing, great ui)
@@ -36,6 +37,10 @@ The ruleset consists of a zip file containing 3 files that you need to extract i
 ## Screenshot
 
 ![alt text](images/screenshot.png)
+_The standard interface of the editor. Use the tools on the left to select and place notes. Placed notes will show their respective icons and modifiers._
+
+![alt text](images/screenshot2.png)
+_Select a single note to see its properties. You can also check what side it will spawn on, and if the camera is zoomed out (centered)._
 
 ## Credits
 

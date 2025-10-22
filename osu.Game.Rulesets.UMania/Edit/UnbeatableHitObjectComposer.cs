@@ -23,6 +23,8 @@ public partial class UnbeatableHitObjectComposer : ManiaHitObjectComposer
     {
     }
 
+    protected override Drawable CreateHitObjectInspector() => new UManiaHitObjectInspector();
+
     protected override IReadOnlyList<CompositionTool> CompositionTools => new CompositionTool[]
     {
         // Unbeatable Note Predicates

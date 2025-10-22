@@ -13,6 +13,9 @@ using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Extensions;
 using osu.Game.Graphics.UserInterfaceV2;
+using osu.Game.Localisation;
+using osu.Game.Overlays;
+using osu.Game.Overlays.OSD;
 using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Setup;
@@ -29,7 +32,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
         [Resolved] private BeatmapManager beatmapManager { get; set; } = null!;
 
-        public void ExportToUnbeatable()
+        [Resolved(canBeNull: true)] private OnScreenDisplay onScreenDisplay { get; set; }
+
+        public void ExportToUnbeatable() => Task.Run(exportToUnbeatable);
+
+        private void exportToUnbeatable()
         {
             Logger.Log("Exporting to Unbeatable...");
 
@@ -40,7 +47,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             // Export the .osu file
             Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
 
-            PassBeatmapConverter passConverter = new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+            PassBeatmapConverter passConverter =
+                new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
 
             var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
 
@@ -57,7 +65,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var audioFile = beatmapSet.GetFile(audioFilename);
             if (audioFile == null)
+            {
+                showToast("Export failed", "Audio file not found in beatmap set.");
                 return;
+            }
+
             var audioStream = workingBeatmap.GetStream(audioFile.File.GetStoragePath());
 
             // Temp folder
@@ -89,11 +101,16 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 {
                     ws.Connect();
                     ws.Send("play " + beatmapPath);
+
+                    showToast("Export successful", "Sent to Unbeatable!");
                 }
             });
         }
 
-        public void ExportToZip()
+
+        public void ExportToZip() => Task.Run(exportToZip);
+
+        private void exportToZip()
         {
             string artist = Beatmap.Metadata.Artist ?? "Unknown";
             string title = Beatmap.Metadata.Title ?? "Song";
@@ -109,7 +126,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             // Export the .osu file
             Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
 
-            PassBeatmapConverter passConverter = new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+            PassBeatmapConverter passConverter =
+                new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
 
             var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
 
@@ -177,6 +195,22 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             beatmapStream.Dispose();
 
             Logger.Log($"Exporting to {zipFilename}...");
+
+            showToast("Export successful", $"Saved as {zipFilename}");
+        }
+
+
+        private partial class BeatmapEditorToast : Toast
+        {
+            public BeatmapEditorToast(LocalisableString value, string beatmapDisplayName)
+                : base(InputSettingsStrings.EditorSection, value, beatmapDisplayName)
+            {
+            }
+        }
+
+        private void showToast(string title, string message)
+        {
+            onScreenDisplay?.Display(new BeatmapEditorToast(title, message));
         }
 
 

@@ -67,14 +67,15 @@ namespace osu.Game.Rulesets.UMania.Beatmaps
                                       (int)MathF.Round(difficulty.ApproachRate));
             TargetColumns = 6; // Always start at 6 columns
 
-            if (beatmap != null)
-                beatmap.BeatmapInfo.OnlineID = 3;
+            /*if (beatmap != null)
+                beatmap.BeatmapInfo.OnlineID = 3;*/
 
-            if (IsForCurrentRuleset && TargetColumns > UManiaRuleset.MAX_STAGE_KEYS)
+            /*if (IsForCurrentRuleset && TargetColumns > UManiaRuleset.MAX_STAGE_KEYS)
             {
                 TargetColumns /= 2;
                 Dual = true;
             }
+            */
 
             /*static int getColumnCount(LegacyBeatmapConversionDifficultyInfo difficulty)
             {

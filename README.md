@@ -1,6 +1,6 @@
 # Unbeatable Osu Editor
 
-A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier.
+A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier. Based on the osu!mania ruleset and editor.
 
 ## Installation
 

@@ -23,7 +23,7 @@ The ruleset consists of a zip file containing 3 files that you need to extract i
 3. Start osu!lazer and begin creating by selecting the ruleset in the top left and entering the editor.
    If osu!lazer was running while installing the ruleset, you may need to restart the game in order for the ruleset to appear.
 
-4. Settings like key count are already set up for you, so you can immediately start mapping.
+4. Settings like key count are already set up for you, so you can immediately start mapping!
 
 ## Features
 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
@@ -112,6 +113,12 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
         private void exportToZip()
         {
+            if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
+            {
+                showToast("Export failed", "No export folder selected.");
+                return;
+            }
+
             string artist = Beatmap.Metadata.Artist ?? "Unknown";
             string title = Beatmap.Metadata.Title ?? "Song";
             string author = Beatmap.Metadata.Author.Username ?? "Unknown";
@@ -182,8 +189,15 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 zipStream.Seek(0, SeekOrigin.Begin);
 
                 // Save the .zip file
-                string directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                    "Downloads");
+
+
+                // show file save dialog
+
+                var directory = exportFolderSelector.SelectedDirectory.Value;
+
+                var savePath = Path.Combine(directory, zipFilename);
+
+
 
                 using (var fs = File.Create(Path.Combine(directory, zipFilename)))
                 {
@@ -214,6 +228,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         }
 
 
+        private UbExportFolderSelector exportFolderSelector;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -231,6 +247,11 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                     ButtonText = "Export to .zip",
                     Action = ExportToZip,
                 },
+                exportFolderSelector = new UbExportFolderSelector(false, [@".qetiqpuqloekglxmbnmnbfkworitzuokwjfbmvncvmbndf"]) // some extension that is unlikely to be chosen, so only folders are visible
+                {
+                    Caption = "Export folder",
+                    PlaceholderText = "Select folder to export Unbeatable beatmaps to",
+                }
             };
         }
     }

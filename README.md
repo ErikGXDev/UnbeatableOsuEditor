@@ -39,11 +39,14 @@ The ruleset consists of a zip file containing 3 files that you need to extract i
 
 ## Screenshot
 
-![alt text](images/screenshot.png)
+![General Overview](images/screenshot.png)
 _The standard interface of the editor. Use the tools on the left to select and place notes. Placed notes will show their respective icons and modifiers._
 
-![alt text](images/screenshot2.png)
+![Inspector Demo](images/screenshot2.png)
 _Select a single note to see its properties. You can also check what side it will spawn on, and if the camera is zoomed out (centered)._
+
+![Export Options](images/screenshot3.png)
+_Export your map as a .zip file using the buttons at the bottom of the setup page. Choose a folder, and click export. You can also quickly test the map in-game here._
 
 ## Credits
 

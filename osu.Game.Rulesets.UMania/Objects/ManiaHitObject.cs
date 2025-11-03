@@ -10,7 +10,7 @@ using osu.Game.Rulesets.UMania.Scoring;
 
 namespace osu.Game.Rulesets.UMania.Objects
 {
-    public abstract class ManiaHitObject : HitObject, IHasColumn, IHasXPosition
+    public class ManiaHitObject : HitObject, IHasColumn, IHasXPosition
     {
         private HitObjectProperty<int> column;
 

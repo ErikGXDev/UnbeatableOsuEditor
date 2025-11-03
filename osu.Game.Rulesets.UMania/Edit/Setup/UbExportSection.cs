@@ -2,6 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -111,32 +113,30 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
         public void ExportToZip() => Task.Run(exportToZip);
 
-        private void exportToZip()
+
+        private IBeatmap[] getBeatmapsFromSet(BeatmapSetInfo beatmapSet)
         {
-            if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
+            var beatmaps = new IBeatmap[beatmapSet.Beatmaps.Count];
+
+            for (int i = 0; i < beatmapSet.Beatmaps.Count; i++)
             {
-                showToast("Export failed", "No export folder selected.");
-                return;
+                var beatmapInfo = beatmapSet.Beatmaps[i];
+                var beatmap = beatmapManager.GetWorkingBeatmap(beatmapInfo).Beatmap;
+                beatmaps[i] = beatmap;
             }
 
-            string artist = Beatmap.Metadata.Artist ?? "Unknown";
-            string title = Beatmap.Metadata.Title ?? "Song";
-            string author = Beatmap.Metadata.Author.Username ?? "Unknown";
-            string difficulty = Beatmap.BeatmapInfo.DifficultyName ?? "Easy";
-            string baseFilename = $"{artist} - {title} ({author}) [{difficulty}]".GetValidFilename();
+            return beatmaps;
+        }
 
-            var workingBeatmap = editor.Beatmap.Value;
-
-            var beatmapSet = workingBeatmap.BeatmapSetInfo;
-
-
+        private MemoryStream getBeatmapStream(IBeatmap beatmap)
+        {
             // Export the .osu file
-            Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
+            Logger.Log(beatmap.HitObjects.Count + " hitobjects found.");
 
             PassBeatmapConverter passConverter =
-                new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+                new PassBeatmapConverter(beatmap, beatmap.BeatmapInfo.Ruleset.CreateInstance());
 
-            var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
+            var playableBeatmap = passConverter.ConvertBeatmap(beatmap, CancellationToken.None);
 
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
@@ -147,10 +147,41 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             sw.Flush();
 
+            return beatmapStream;
+        }
+
+        private void exportToZip()
+        {
+
+            if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
+            {
+                showToast("Export failed", "No export folder selected.");
+                return;
+            }
+
+            var workingBeatmap = editor.Beatmap.Value;
+
+            var beatmapSet = Beatmap.BeatmapInfo.BeatmapSet;
 
             string audioFilename = Beatmap.Metadata.AudioFile;
 
             var audioFile = beatmapSet.GetFile(audioFilename);
+
+            var baseFilename = "";
+
+            string artist = Beatmap.Metadata.Artist ?? "Unknown";
+            string title = Beatmap.Metadata.Title ?? "Song";
+            string author = Beatmap.Metadata.Author.Username ?? "Unknown";
+            string difficulty = Beatmap.BeatmapInfo.DifficultyName ?? "Easy";
+
+            if (beatmapSet.Beatmaps.Count > 1)
+            {
+                baseFilename = $"{artist} - {title} ({author})".GetValidFilename();
+            }
+            else
+            {
+                baseFilename = $"{artist} - {title} ({author}) [{difficulty}]".GetValidFilename();
+            }
 
             // Create the .zip file
             string zipFilename = baseFilename + ".zip";
@@ -159,12 +190,25 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             {
                 using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
                 {
-                    var beatmapEntry = archive.CreateEntry(baseFilename + $".osu", CompressionLevel.Optimal);
 
-                    using (var entryStream = beatmapEntry.Open())
+                    var beatmaps = getBeatmapsFromSet(beatmapSet);
+
+                    foreach (var beatmap in beatmaps)
                     {
-                        beatmapStream.Seek(0, SeekOrigin.Begin);
-                        beatmapStream.CopyTo(entryStream);
+                        var stream = getBeatmapStream(beatmap);
+
+                        var newDifficulty = beatmap.BeatmapInfo.DifficultyName ?? "Easy";
+
+                        var beatmapName = $"{artist} - {title} ({author}) [{newDifficulty}]".GetValidFilename();
+                        var beatmapEntry = archive.CreateEntry(beatmapName + $".osu", CompressionLevel.Optimal);
+
+                        using (var entryStream = beatmapEntry.Open())
+                        {
+                            stream.Seek(0, SeekOrigin.Begin);
+                            stream.CopyTo(entryStream);
+                        }
+
+                        stream.Dispose();
                     }
 
                     // Only add audio file if it exists
@@ -206,11 +250,104 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 }
             }
 
-            beatmapStream.Dispose();
 
             Logger.Log($"Exporting to {zipFilename}...");
 
             showToast("Export successful", $"Saved as {zipFilename}");
+        }
+
+        public void ExportToFolder() => Task.Run(exportToFolder);
+
+        private void exportToFolder()
+        {
+            if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
+            {
+                showToast("Export failed", "No export folder selected.");
+                return;
+            }
+
+            var workingBeatmap = editor.Beatmap.Value;
+
+            var beatmapSet = Beatmap.BeatmapInfo.BeatmapSet;
+
+            string audioFilename = Beatmap.Metadata.AudioFile;
+
+            var audioFile = beatmapSet.GetFile(audioFilename);
+
+            var baseFilename = "";
+
+            string artist = Beatmap.Metadata.Artist ?? "Unknown";
+            string title = Beatmap.Metadata.Title ?? "Song";
+            string author = Beatmap.Metadata.Author.Username ?? "Unknown";
+            string difficulty = Beatmap.BeatmapInfo.DifficultyName ?? "Easy";
+
+            if (beatmapSet.Beatmaps.Count > 1)
+            {
+                baseFilename = $"{artist} - {title} ({author})".GetValidFilename();
+            }
+            else
+            {
+                baseFilename = $"{artist} - {title} ({author}) [{difficulty}]".GetValidFilename();
+            }
+
+            var directory = exportFolderSelector.SelectedDirectory.Value;
+
+            var beatmaps = getBeatmapsFromSet(beatmapSet);
+
+            foreach (var beatmap in beatmaps)
+            {
+                var stream = getBeatmapStream(beatmap);
+
+                var newDifficulty = beatmap.BeatmapInfo.DifficultyName ?? "Easy";
+
+                var beatmapName = $"{artist} - {title} ({author}) [{newDifficulty}]".GetValidFilename();
+                var beatmapPath = Path.Combine(directory, beatmapName + $".osu");
+
+                using (var fs = File.Create(beatmapPath))
+                {
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.CopyTo(fs);
+                }
+
+                stream.Dispose();
+            }
+
+            // Only add audio file if it exists
+            if (audioFile != null)
+            {
+                var audioStream = workingBeatmap.GetStream(audioFile.File.GetStoragePath());
+                if (audioStream != null)
+                {
+                    var audioPath = Path.Combine(directory, audioFilename);
+
+                    using (var fs = File.Create(audioPath))
+                    {
+                        audioStream.Seek(0, SeekOrigin.Begin);
+                        audioStream.CopyTo(fs);
+                    }
+
+                    audioStream.Dispose();
+                }
+            }
+
+            Logger.Log($"Exporting to folder {directory}...");
+
+            showToast("Export successful", $"Saved to folder {baseFilename}");
+        }
+
+
+        public void ExportMap()
+        {
+
+            showToast("Exporting...", "Please wait...");
+            if (exportModeBindable.Value == ExportMode.Zip)
+            {
+                ExportToZip();
+            }
+            else
+            {
+                ExportToFolder();
+            }
         }
 
 
@@ -227,7 +364,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             onScreenDisplay?.Display(new BeatmapEditorToast(title, message));
         }
 
-
+        private Bindable<ExportMode> exportModeBindable = new Bindable<ExportMode>(ExportMode.Zip);
         private UbExportFolderSelector exportFolderSelector;
 
         [BackgroundDependencyLoader]
@@ -243,16 +380,34 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 },
                 new FormButton
                 {
-                    Caption = "Export your map to a .zip file for easy sharing",
-                    ButtonText = "Export to .zip",
-                    Action = ExportToZip,
+                    Caption = "Export your beatmap locally for easy sharing",
+                    ButtonText = "Export map",
+                    Action = ExportMap,
+                },
+                new FormEnumDropdown<ExportMode>
+                {
+                    Caption = "Export as",
+                    Current = exportModeBindable,
                 },
                 exportFolderSelector = new UbExportFolderSelector(false, [@".qetiqpuqloekglxmbnmnbfkworitzuokwjfbmvncvmbndf"]) // some extension that is unlikely to be chosen, so only folders are visible
                 {
                     Caption = "Export folder",
                     PlaceholderText = "Select folder to export Unbeatable beatmaps to",
-                }
+                },
+
             };
         }
+
+        enum ExportMode
+        {
+            [Description("Package (.zip file)")]
+            Zip,
+
+            [Description("Uncompressed files")]
+            Folder
+        }
+
     }
+
+
 }

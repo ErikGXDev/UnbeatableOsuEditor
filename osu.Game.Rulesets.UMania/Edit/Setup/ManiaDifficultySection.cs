@@ -9,7 +9,6 @@ using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Graphics.UserInterfaceV2;
 using osu.Game.Localisation;
-using osu.Game.Resources.Localisation.Web;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Setup;
 
@@ -39,7 +38,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             {
                 keyCountSlider = new FormSliderBar<float>
                 {
-                    Caption = BeatmapsetsStrings.ShowStatsCsMania,
+                    Caption = "Columns",
                     HintText = "The number of columns in the beatmap",
                     Current = new BindableFloat(Beatmap.Difficulty.CircleSize)
                     {
@@ -60,7 +59,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 },
                 healthDrainSlider = new FormSliderBar<float>
                 {
-                    Caption = BeatmapsetsStrings.ShowStatsDrain,
+                    Caption = "Drain Rate",
                     HintText = EditorSetupStrings.DrainRateDescription,
                     Current = new BindableFloat(Beatmap.Difficulty.DrainRate)
                     {
@@ -74,7 +73,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 },
                 overallDifficultySlider = new FormSliderBar<float>
                 {
-                    Caption = BeatmapsetsStrings.ShowStatsAccuracy,
+                    Caption = "Overall Difficulty",
                     HintText = EditorSetupStrings.OverallDifficultyDescription,
                     Current = new BindableFloat(Beatmap.Difficulty.OverallDifficulty)
                     {

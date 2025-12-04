@@ -16,6 +16,7 @@ using osu.Framework.Localisation;
 using osu.Game.Beatmaps;
 using osu.Game.Extensions;
 using osu.Game.Graphics.UserInterfaceV2;
+using osu.Game.IO.Serialization;
 using osu.Game.Localisation;
 using osu.Game.Overlays;
 using osu.Game.Overlays.OSD;
@@ -45,15 +46,34 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var workingBeatmap = editor.Beatmap.Value;
 
-            var beatmapSet = workingBeatmap.BeatmapSetInfo;
+            var beatmapSet = Beatmap.BeatmapInfo.BeatmapSet;
 
-            // Export the .osu file
-            Logger.Log(Beatmap.HitObjects.Count + " hitobjects found.");
+            var difficulty = Beatmap.BeatmapInfo.DifficultyName;
+
+            var beatmaps = getBeatmapsFromSet(beatmapSet);
+
+            // find the correct beatmap in beatmap set by matching difficulty name
+            IBeatmap? targetBeatmap = null;
+
+            foreach (var bm in beatmaps)
+            {
+                if (bm.BeatmapInfo.DifficultyName == difficulty)
+                {
+                    targetBeatmap = bm;
+                    break;
+                }
+            }
+
+            if (targetBeatmap == null)
+            {
+                return;
+            }
+
 
             PassBeatmapConverter passConverter =
-                new PassBeatmapConverter(Beatmap, Beatmap.BeatmapInfo.Ruleset.CreateInstance());
+                new PassBeatmapConverter(targetBeatmap, targetBeatmap.BeatmapInfo.Ruleset.CreateInstance());
 
-            var playableBeatmap = passConverter.ConvertBeatmap(Beatmap, CancellationToken.None);
+            var playableBeatmap = passConverter.ConvertBeatmap(targetBeatmap, CancellationToken.None);
 
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 

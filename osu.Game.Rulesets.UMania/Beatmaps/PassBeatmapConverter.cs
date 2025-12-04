@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using MongoDB.Bson;
+using osu.Framework.Logging;
 using osu.Game.Audio;
 using osu.Game.Beatmaps;
 using osu.Game.IO.Serialization;
 using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Objects.Types;
 using osu.Game.Rulesets.UMania.Objects;
 
 namespace osu.Game.Rulesets.UMania.Beatmaps;
@@ -58,9 +61,21 @@ public class PassBeatmapConverter : BeatmapConverter<HitObject>
                 serializedHitObjects.Add(deserialized);
 
             }
+            else if (hitObject is IHasXPosition xPosition)
+            {
+                var deserialized = serialized.Deserialize<XHitObject>();
+
+                if (xPosition.X > 6)
+                {
+                    deserialized.X = GetColumn(xPosition.X);
+                }
+
+                serializedHitObjects.Add(deserialized);
+            }
             else
             {
                 var deserialized = serialized.Deserialize<ManiaHitObject>();
+
                 serializedHitObjects.Add(deserialized);
             }
         }
@@ -69,5 +84,22 @@ public class PassBeatmapConverter : BeatmapConverter<HitObject>
 
 
         return convertBeatmap;
+    }
+
+    protected int GetColumn(float position)
+    {
+
+        float localXDivisor = 512f / 6;
+        return Math.Clamp((int)MathF.Floor(position / localXDivisor), 0, 6 - 1);
+    }
+
+    class XHitObject : HitObject, IHasXPosition
+    {
+        public XHitObject()
+        {
+
+        }
+
+        public float X { get; set; }
     }
 }

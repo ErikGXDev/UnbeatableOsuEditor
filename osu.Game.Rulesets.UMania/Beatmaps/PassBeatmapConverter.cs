@@ -63,6 +63,25 @@ public class PassBeatmapConverter : BeatmapConverter<HitObject>
             }
             else if (hitObject is IHasXPosition xPosition)
             {
+
+                if (hitObject is IHasDuration duration)
+                {
+                    var deserialized1 = serialized.Deserialize<XHitObjectHold>();
+
+                    if (xPosition.X > 6)
+                    {
+                        deserialized1.X = GetColumn(xPosition.X);
+                    }
+
+                    deserialized1.Duration = duration.Duration;
+                    deserialized1.EndTime = duration.EndTime;
+
+                    serializedHitObjects.Add(deserialized1);
+                    continue;
+                }
+
+
+
                 var deserialized = serialized.Deserialize<XHitObject>();
 
                 if (xPosition.X > 6)
@@ -101,5 +120,19 @@ public class PassBeatmapConverter : BeatmapConverter<HitObject>
         }
 
         public float X { get; set; }
+    }
+
+    class XHitObjectHold : HitObject, IHasXPosition, IHasDuration
+    {
+        public XHitObjectHold()
+        {
+
+        }
+
+        public float X { get; set; }
+
+        public double Duration { get; set; }
+
+        public double EndTime { get; set; }
     }
 }

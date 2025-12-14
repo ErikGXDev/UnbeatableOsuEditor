@@ -23,6 +23,7 @@ using osu.Game.Overlays.OSD;
 using osu.Game.Rulesets.UMania.Beatmaps;
 using osu.Game.Screens.Edit;
 using osu.Game.Screens.Edit.Setup;
+using osuTK;
 using WebSocketSharp;
 using Logger = osu.Framework.Logging.Logger;
 
@@ -79,6 +80,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
+            // Force Windows newlines for exported beatmap files
+            sw.NewLine = "\r\n";
 
             encoder.EncodeB(sw);
 
@@ -162,6 +165,8 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var beatmapStream = new MemoryStream();
             var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
+            // Force Windows newlines for exported beatmap files
+            sw.NewLine = "\r\n";
 
             encoder.EncodeB(sw);
 
@@ -371,6 +376,53 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         }
 
 
+        public bool IsWindows()
+        {
+            return Environment.OSVersion.Platform == PlatformID.Win32NT;
+        }
+        public void OpenGameFolder()
+        {
+            // Open
+            // %USERPROFILE%\AppData\LocalLow\D-CELL GAMES\UNBEATABLE
+
+            if (!IsWindows())
+            {
+                showToast("Error", "Opening Unbeatable folder is only supported on Windows.");
+                return;
+            }
+
+            try
+            {
+                // Resolve LocalLow from the user's profile (reliable on Windows)
+                var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var localLowPath = Path.Combine(userProfile, "AppData", "LocalLow");
+
+                var unbeatablePath = Path.Combine(localLowPath, "D-CELL GAMES", "UNBEATABLE");
+
+                if (!Directory.Exists(unbeatablePath))
+                {
+                    showToast("Error", $"Unbeatable folder not found: {unbeatablePath}");
+                    Logger.Log($"Unbeatable folder does not exist: {unbeatablePath}");
+                    return;
+                }
+
+                // Use explorer.exe to open the folder (works reliably for directories)
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = '"' + unbeatablePath + '"',
+                    UseShellExecute = true
+                });
+
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to open Unbeatable folder: {e.Message}");
+                showToast("Error", "Failed to open Unbeatable folder.");
+            }
+        }
+
+
         private partial class BeatmapEditorToast : Toast
         {
             public BeatmapEditorToast(LocalisableString value, string beatmapDisplayName)
@@ -414,6 +466,14 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                     Caption = "Export folder",
                     PlaceholderText = "Select folder to export Unbeatable beatmaps to",
                 },
+                new FormButton()
+                {
+                    Caption = "Open UNBEATABLE Folder",
+                    ButtonText = "Open Folder",
+                    Action = OpenGameFolder,
+                    Alpha = IsWindows() ? 1f : 0f,
+                    Margin = new MarginPadding() {Top = 24},
+                }
 
             };
         }

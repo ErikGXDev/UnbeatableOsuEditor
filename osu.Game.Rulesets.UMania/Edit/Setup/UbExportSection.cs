@@ -79,13 +79,33 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
             var beatmapStream = new MemoryStream();
-            var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
-            // Force Windows newlines for exported beatmap files
-            sw.NewLine = "\r\n";
+            using (var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024, leaveOpen: true))
+            {
+                // Force Windows newlines for exported beatmap files
+                sw.NewLine = "\r\n";
 
-            encoder.EncodeB(sw);
+                encoder.EncodeB(sw);
+            } // StreamWriter is properly disposed here, flushing all content
 
-            sw.Flush();
+            // Failsafe: Normalize all newlines to Windows format (\r\n)
+            beatmapStream.Seek(0, SeekOrigin.Begin);
+            string content;
+            using (var reader = new StreamReader(beatmapStream, Encoding.UTF8, true, 1024, leaveOpen: true))
+            {
+                content = reader.ReadToEnd();
+            }
+
+            // Replace all newline variants with Windows newlines
+            content = content.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+
+            // Write normalized content back to stream
+            beatmapStream.SetLength(0);
+            beatmapStream.Seek(0, SeekOrigin.Begin);
+            using (var writer = new StreamWriter(beatmapStream, Encoding.UTF8, 1024, leaveOpen: true))
+            {
+                writer.Write(content);
+            }
+
             // Audio file
             string audioFilename = Beatmap.Metadata.AudioFile;
 
@@ -164,13 +184,32 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             UbBeatmapEncoder encoder = new UbBeatmapEncoder(playableBeatmap, null);
 
             var beatmapStream = new MemoryStream();
-            var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024);
-            // Force Windows newlines for exported beatmap files
-            sw.NewLine = "\r\n";
+            using (var sw = new StreamWriter(beatmapStream, Encoding.UTF8, 1024, leaveOpen: true))
+            {
+                // Force Windows newlines for exported beatmap files
+                sw.NewLine = "\r\n";
 
-            encoder.EncodeB(sw);
+                encoder.EncodeB(sw);
+            } // StreamWriter is properly disposed here, flushing all content
 
-            sw.Flush();
+            // Failsafe: Normalize all newlines to Windows format (\r\n)
+            beatmapStream.Seek(0, SeekOrigin.Begin);
+            string content;
+            using (var reader = new StreamReader(beatmapStream, Encoding.UTF8, true, 1024, leaveOpen: true))
+            {
+                content = reader.ReadToEnd();
+            }
+
+            // Replace all newline variants with Windows newlines
+            content = content.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
+
+            // Write normalized content back to stream
+            beatmapStream.SetLength(0);
+            beatmapStream.Seek(0, SeekOrigin.Begin);
+            using (var writer = new StreamWriter(beatmapStream, Encoding.UTF8, 1024, leaveOpen: true))
+            {
+                writer.Write(content);
+            }
 
             return beatmapStream;
         }
@@ -332,6 +371,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 {
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.CopyTo(fs);
+
                 }
 
                 stream.Dispose();

@@ -80,6 +80,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         public void EncodeB(TextWriter writer)
         {
             var tempWriter = new StringWriter();
+
             Encode(tempWriter);
 
             string output = tempWriter.ToString();

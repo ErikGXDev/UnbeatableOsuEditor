@@ -154,7 +154,6 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         }
 
 
-        public void ExportToZip() => Task.Run(exportToZip);
 
 
         private IBeatmap[] getBeatmapsFromSet(BeatmapSetInfo beatmapSet)
@@ -214,7 +213,10 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             return beatmapStream;
         }
 
-        private void exportToZip()
+        public void ExportToZip(string extension = ".osu") => Task.Run(() => {exportToZip(extension);});
+
+
+        private void exportToZip(string extension = ".osu")
         {
 
             if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
@@ -264,7 +266,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                         var newDifficulty = beatmap.BeatmapInfo.DifficultyName ?? "Easy";
 
                         var beatmapName = $"{artist} - {title} ({author}) [{newDifficulty}]".GetValidFilename();
-                        var beatmapEntry = archive.CreateEntry(beatmapName + $".osu", CompressionLevel.Optimal);
+                        var beatmapEntry = archive.CreateEntry(beatmapName + extension, CompressionLevel.Optimal);
 
                         using (var entryStream = beatmapEntry.Open())
                         {
@@ -320,9 +322,9 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             showToast("Export successful", $"Saved as {zipFilename}");
         }
 
-        public void ExportToFolder() => Task.Run(exportToFolder);
+        public void ExportToFolder(string extension = ".osu") => Task.Run(() => {exportToFolder(extension);});
 
-        private void exportToFolder()
+        private void exportToFolder(string extension = ".osu")
         {
             if (string.IsNullOrEmpty(exportFolderSelector.SelectedDirectory.Value))
             {
@@ -365,7 +367,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
                 var newDifficulty = beatmap.BeatmapInfo.DifficultyName ?? "Easy";
 
                 var beatmapName = $"{artist} - {title} ({author}) [{newDifficulty}]".GetValidFilename();
-                var beatmapPath = Path.Combine(directory, beatmapName + $".osu");
+                var beatmapPath = Path.Combine(directory, beatmapName + extension);
 
                 using (var fs = File.Create(beatmapPath))
                 {
@@ -405,13 +407,22 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         {
 
             showToast("Exporting...", "Please wait...");
-            if (exportModeBindable.Value == ExportMode.Zip)
-            {
-                ExportToZip();
-            }
-            else
+
+            if (exportModeBindable.Value == ExportMode.Folder)
             {
                 ExportToFolder();
+            }
+            else if (exportModeBindable.Value == ExportMode.OfficialFolder)
+            {
+                ExportToFolder(".txt");
+            }
+            else if (exportModeBindable.Value == ExportMode.OfficialZip)
+            {
+                ExportToZip(".txt");
+            }
+            else if (exportModeBindable.Value == ExportMode.Zip)
+            {
+                ExportToZip();
             }
         }
 
@@ -476,7 +487,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
             onScreenDisplay?.Display(new BeatmapEditorToast(title, message));
         }
 
-        private Bindable<ExportMode> exportModeBindable = new Bindable<ExportMode>(ExportMode.Zip);
+        private Bindable<ExportMode> exportModeBindable = new Bindable<ExportMode>(ExportMode.OfficialZip);
         private UbExportFolderSelector exportFolderSelector;
 
         [BackgroundDependencyLoader]
@@ -520,11 +531,18 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
         enum ExportMode
         {
-            [Description("Package (.zip file)")]
+            [Description("Official Package (.zip file, .txt)")]
+            OfficialZip,
+
+            [Description("As Folder (.txt)")]
+            OfficialFolder,
+
+            [Description("Legacy Package (.zip file, .osu)")]
             Zip,
 
-            [Description("Uncompressed files")]
-            Folder
+            [Description("Legacy Folder (.osu)")]
+            Folder,
+
         }
 
     }

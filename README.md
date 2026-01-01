@@ -5,7 +5,7 @@ A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier. Bas
 ## Installation
 
 > [!TIP]
-> You can download the latest version of the ruleset from the [releases page](https://github.com/ErikGXDev/UnbeatableOsuEditor/releases).
+> You can download the latest version of the ruleset from the [releases page](https://github.com/ErikGXDev/UnbeatableOsuEditor/releases). In case the editor stops working in osu!lazer, head back here and check if there's an update!
 
 The ruleset consists of a zip file containing 3 files that you need to extract into the `rulesets` folder of your osu!lazer installation.
 

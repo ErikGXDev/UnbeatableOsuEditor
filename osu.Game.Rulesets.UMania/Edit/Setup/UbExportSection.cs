@@ -340,23 +340,22 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             var audioFile = beatmapSet.GetFile(audioFilename);
 
-            var baseFilename = "";
 
             string artist = Beatmap.Metadata.Artist ?? "Unknown";
             string title = Beatmap.Metadata.Title ?? "Song";
             string author = Beatmap.Metadata.Author.Username ?? "Unknown";
             string difficulty = Beatmap.BeatmapInfo.DifficultyName ?? "Easy";
 
-            if (beatmapSet.Beatmaps.Count > 1)
-            {
-                baseFilename = $"{artist} - {title} ({author})".GetValidFilename();
-            }
-            else
-            {
-                baseFilename = $"{artist} - {title} ({author}) [{difficulty}]".GetValidFilename();
-            }
-
             var directory = exportFolderSelector.SelectedDirectory.Value;
+
+            var baseFolderName = $"{artist} - {title} ({author})".GetValidFilename();
+
+            directory = Path.Combine(directory, baseFolderName);
+
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
             var beatmaps = getBeatmapsFromSet(beatmapSet);
 
@@ -399,7 +398,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
 
             Logger.Log($"Exporting to folder {directory}...");
 
-            showToast("Export successful", $"Saved to folder {baseFilename}");
+            showToast("Export successful", $"Saved to folder {baseFolderName}");
         }
 
 

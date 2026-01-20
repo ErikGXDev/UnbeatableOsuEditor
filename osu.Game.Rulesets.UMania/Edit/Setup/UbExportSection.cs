@@ -476,7 +476,7 @@ namespace osu.Game.Rulesets.UMania.Edit.Setup
         private partial class BeatmapEditorToast : Toast
         {
             public BeatmapEditorToast(LocalisableString value, string beatmapDisplayName)
-                : base(InputSettingsStrings.EditorSection, value, beatmapDisplayName)
+                : base(InputSettingsStrings.EditorSection, value)
             {
             }
         }

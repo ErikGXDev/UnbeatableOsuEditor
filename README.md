@@ -2,6 +2,11 @@
 
 A custom osu!(lazer) ruleset that makes creating UNBEATABLE beatmaps easier. Based on the osu!mania ruleset and editor.
 
+
+> [!IMPORTANT]
+> If you want to use this ruleset, you may want to take a look at [my new standalone editor](https://github.com/ErikGXDev/UnbeatableStandaloneEditor), which turns this ruleset into its own program. It also has more features and will be more actively developed.
+
+
 ## Installation
 
 > [!TIP]
